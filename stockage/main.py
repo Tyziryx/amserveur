@@ -1,5 +1,5 @@
 import time
-from stockage.gerer_stockage import GestionnaireSondes, GestionnaireBDD
+from gerer_stockage import GestionnaireSondes, GestionnaireBDD
 
 # Configuration des sondes - Modifier les chemins selon tes fichiers
 SONDES_CONFIG = [

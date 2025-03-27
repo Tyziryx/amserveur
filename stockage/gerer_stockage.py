@@ -136,6 +136,14 @@ class GestionnaireSondes:
             # Use sys.executable to get the correct Python interpreter
             if sonde_path.endswith('.sh'):
                 resultat = subprocess.check_output(['bash', absolute_sonde_path], universal_newlines=True)
+            elif sonde_id == "cert":
+                # Special handling for parseur.py - extract the latest alert
+                from parseur.parseur import get_last_alert
+                alert = get_last_alert("https://www.cert.ssi.gouv.fr/")
+                if alert:
+                    resultat = json.dumps(alert, ensure_ascii=False)
+                else:
+                    resultat = json.dumps({"status": "erreur", "message": "Aucune alerte trouvée"})
             else:
                 resultat = subprocess.check_output([sys.executable, absolute_sonde_path], universal_newlines=True)
 
@@ -146,20 +154,48 @@ class GestionnaireSondes:
             return None
 
     def collecter_donnees(self):
-        """Collecte les données de toutes les sondes et les insère dans la BDD"""
+        """Collecte les données de toutes les sondes et les renvoie au format JSON structuré"""
+        result = {}
+
         for sonde in self.sondes:
             donnees = self.executer_sonde(sonde["path"], sonde["id"])
             if donnees:
-                # Extraction de la valeur selon le type de sonde
+                # Extraction et stockage de la valeur selon le type de sonde
                 if sonde["id"] == "cpu":
                     valeur = donnees.get("cpu_usage", 0)
+                    result["cpu"] = valeur
+                    self.bdd.inserer_donnees(sonde["id"], valeur)
                 elif sonde["id"] == "ram":
                     valeur = donnees.get("ram", 0)
+                    result["ram"] = valeur
+                    self.bdd.inserer_donnees(sonde["id"], valeur)
                 elif sonde["id"] == "disk":
                     valeur = donnees.get("disk_usage", 0)
+                    result["disk"] = valeur
+                    self.bdd.inserer_donnees(sonde["id"], valeur)
+                elif sonde["id"] == "cert":
+                    # For CERT alerts, store both components and full data
+                    ref = donnees.get("reference", "inconnu")
+                    date = donnees.get("date", "inconnue")
+                    titre = donnees.get("titre", "inconnu")
+
+                    result["cert"] = {
+                        "reference": ref,
+                        "date": date,
+                        "titre": titre
+                    }
+
+                    # Store in database
+                    self.bdd.inserer_donnees(f"{sonde['id']}_ref", ref)
+                    self.bdd.inserer_donnees(f"{sonde['id']}_date", date)
+                    self.bdd.inserer_donnees(f"{sonde['id']}_titre", titre)
+                    self.bdd.inserer_donnees(sonde["id"], json.dumps(donnees, ensure_ascii=False))
                 else:
                     # Fallback for unknown sensors
                     valeur = next(iter(donnees.values()), 0)
+                    result[sonde["id"]] = valeur
+                    self.bdd.inserer_donnees(sonde["id"], valeur)
 
-                self.bdd.inserer_donnees(sonde["id"], valeur)
-
+        # Print the collected data as JSON
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return result

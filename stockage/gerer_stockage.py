@@ -1,14 +1,28 @@
-import sqlite3
 import json
+import os
+import time
+import shutil
+import threading
 import subprocess
 from datetime import datetime
+import sqlite3
 
 
 # Classe pour gérer les opérations sur la base de données
 class GestionnaireBDD:
     def __init__(self, db_name='identifier.sqlite'):
         self.db_name = db_name
+        self.backup_dir = 'backups'
+        self.backup_interval = 300
         self.initialiser_bdd()
+
+        # Créer le dossier de backups s'il n'existe pas
+        if not os.path.exists(self.backup_dir):
+            os.makedirs(self.backup_dir)
+
+        # Démarrer le thread de backup
+        self.backup_thread = threading.Thread(target=self.backup_scheduler, daemon=True)
+        self.backup_thread.start()
 
     def initialiser_bdd(self):
         """Initialise la base de données et crée la table sondes si nécessaire"""
@@ -62,6 +76,7 @@ class GestionnaireBDD:
         # Vérifier et purger si nécessaire après l'insertion (seulement pour une des sondes)
         if nom_sonde == "cpu":  # Ne purger qu'après l'insertion des données CPU pour éviter des opérations inutiles
             self.purger_anciennes_donnees()
+
     def afficher_dernieres_donnees(self, limit=9):
         """Affiche les dernières données de la base"""
         conn = sqlite3.connect(self.db_name)
@@ -72,8 +87,6 @@ class GestionnaireBDD:
         conn.close()
 
         return resultats
-
-
 
     def compter_entrees(self):
         """Compte le nombre total d'entrées dans la table sondes"""
@@ -112,6 +125,52 @@ class GestionnaireBDD:
 
         conn.close()
 
+    def create_backup(self):
+        """Crée une sauvegarde de la base de données"""
+        try:
+            # S'assurer que la connexion à la base principale est fermée
+            conn = sqlite3.connect(self.db_name)
+            conn.close()
+
+            # Obtenir un timestamp pour le nom du fichier
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            backup_file = os.path.join(self.backup_dir, f'backup_{timestamp}.db')
+
+            # Copier le fichier de la base de données
+            shutil.copy2(self.db_name, backup_file)
+
+            # Nettoyer les anciens backups (garder seulement les 10 plus récents)
+            self.cleanup_old_backups()
+
+            print(f"Backup créé avec succès: {backup_file}")
+            return True
+        except Exception as e:
+            print(f"Erreur lors de la création du backup: {e}")
+            return False
+
+    def cleanup_old_backups(self, keep=10):
+        """Nettoie les anciens backups en gardant seulement les 'keep' plus récents"""
+        try:
+            # Lister tous les fichiers de backup
+            backup_files = [os.path.join(self.backup_dir, f) for f in os.listdir(self.backup_dir)
+                            if f.startswith('backup_') and f.endswith('.db')]
+
+            # Trier par date de modification (plus récent en premier)
+            backup_files.sort(key=os.path.getmtime, reverse=True)
+
+            # Supprimer les fichiers plus anciens
+            for old_file in backup_files[keep:]:
+                os.remove(old_file)
+                print(f"Ancien backup supprimé: {old_file}")
+        except Exception as e:
+            print(f"Erreur lors du nettoyage des anciens backups: {e}")
+
+    def backup_scheduler(self):
+        """Planificateur qui exécute le backup à intervalle régulier"""
+        while True:
+            time.sleep(self.backup_interval)
+            self.create_backup()
+
 
 # Classe pour gérer les sondes
 class GestionnaireSondes:
@@ -136,14 +195,6 @@ class GestionnaireSondes:
             # Use sys.executable to get the correct Python interpreter
             if sonde_path.endswith('.sh'):
                 resultat = subprocess.check_output(['bash', absolute_sonde_path], universal_newlines=True)
-            elif sonde_id == "cert":
-                # Special handling for parseur.py - extract the latest alert
-                from parseur.parseur import get_last_alert
-                alert = get_last_alert("https://www.cert.ssi.gouv.fr/")
-                if alert:
-                    resultat = json.dumps(alert, ensure_ascii=False)
-                else:
-                    resultat = json.dumps({"status": "erreur", "message": "Aucune alerte trouvée"})
             else:
                 resultat = subprocess.check_output([sys.executable, absolute_sonde_path], universal_newlines=True)
 
@@ -154,48 +205,19 @@ class GestionnaireSondes:
             return None
 
     def collecter_donnees(self):
-        """Collecte les données de toutes les sondes et les renvoie au format JSON structuré"""
-        result = {}
-
+        """Collecte les données de toutes les sondes et les insère dans la BDD"""
         for sonde in self.sondes:
             donnees = self.executer_sonde(sonde["path"], sonde["id"])
             if donnees:
-                # Extraction et stockage de la valeur selon le type de sonde
+                # Extraction de la valeur selon le type de sonde
                 if sonde["id"] == "cpu":
                     valeur = donnees.get("cpu_usage", 0)
-                    result["cpu"] = valeur
-                    self.bdd.inserer_donnees(sonde["id"], valeur)
                 elif sonde["id"] == "ram":
                     valeur = donnees.get("ram", 0)
-                    result["ram"] = valeur
-                    self.bdd.inserer_donnees(sonde["id"], valeur)
                 elif sonde["id"] == "disk":
                     valeur = donnees.get("disk_usage", 0)
-                    result["disk"] = valeur
-                    self.bdd.inserer_donnees(sonde["id"], valeur)
-                elif sonde["id"] == "cert":
-                    # For CERT alerts, store both components and full data
-                    ref = donnees.get("reference", "inconnu")
-                    date = donnees.get("date", "inconnue")
-                    titre = donnees.get("titre", "inconnu")
-
-                    result["cert"] = {
-                        "reference": ref,
-                        "date": date,
-                        "titre": titre
-                    }
-
-                    # Store in database
-                    self.bdd.inserer_donnees(f"{sonde['id']}_ref", ref)
-                    self.bdd.inserer_donnees(f"{sonde['id']}_date", date)
-                    self.bdd.inserer_donnees(f"{sonde['id']}_titre", titre)
-                    self.bdd.inserer_donnees(sonde["id"], json.dumps(donnees, ensure_ascii=False))
                 else:
                     # Fallback for unknown sensors
                     valeur = next(iter(donnees.values()), 0)
-                    result[sonde["id"]] = valeur
-                    self.bdd.inserer_donnees(sonde["id"], valeur)
 
-        # Print the collected data as JSON
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-        return result
+                self.bdd.inserer_donnees(sonde["id"], valeur)

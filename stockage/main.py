@@ -1,5 +1,5 @@
 import time
-from gerer_stockage import GestionnaireSondes, GestionnaireBDD
+from gerer_stockage import GestionnaireBDD, GestionnaireSondes
 
 # Configuration des sondes - Modifier les chemins selon tes fichiers
 SONDES_CONFIG = [
@@ -13,22 +13,14 @@ db_name = 'identifier.sqlite'
 
 def main():
     """Fonction principale qui exécute la collecte de données régulière"""
-    # Initialisation du gestionnaire de sondes
-    gestionnaire = GestionnaireSondes(SONDES_CONFIG)
-    """
+    # Initialisation du gestionnaire de sondes et de la BDD
     gestionnaire_bdd = GestionnaireBDD(db_name=db_name)
-
+    gestionnaire = GestionnaireSondes(SONDES_CONFIG)
     gestionnaire.bdd = gestionnaire_bdd
 
-    # Récupérer et afficher les dernières données
-    resultats = gestionnaire_bdd.afficher_dernieres_donnees(limit=99)
+    # Créer un backup initial au démarrage
+    gestionnaire_bdd.create_backup()
 
-    print("Dernières données enregistrées:")
-    for resultat in resultats:
-        id, nom_sonde, valeur, annee, mois, jour, heure, minutes, secondes, timestamp = resultat
-        print(f"ID: {id} | Capteur: {nom_sonde} | Valeur: {valeur} | Timestamp: {timestamp}")
-        print("-" * 80)
-"""
     print("\nDémarrage de la collecte de données...")
     try:
         while True:
@@ -38,6 +30,8 @@ def main():
             time.sleep(3)
     except KeyboardInterrupt:
         print("Arrêt de la collecte de données.")
+        # Créer un backup final à l'arrêt
+        gestionnaire_bdd.create_backup()
 
 
 if __name__ == "__main__":

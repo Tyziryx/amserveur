@@ -1,5 +1,7 @@
 import time
 from gerer_stockage import GestionnaireBDD, GestionnaireSondes
+import sys
+import os
 
 # Configuration des sondes - Modifier les chemins selon tes fichiers
 SONDES_CONFIG = [
@@ -8,7 +10,8 @@ SONDES_CONFIG = [
     {"path": "sondes/disk.sh", "id": "disk"}
 ]
 
-db_name = 'identifier.sqlite'
+# Database in root directory
+db_name = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'table_sondes.sqlite')
 
 
 def main():
@@ -18,20 +21,26 @@ def main():
     gestionnaire = GestionnaireSondes(SONDES_CONFIG)
     gestionnaire.bdd = gestionnaire_bdd
 
-    # Créer un backup initial au démarrage
-    gestionnaire_bdd.create_backup()
-
     print("\nDémarrage de la collecte de données...")
-    try:
-        while True:
-            # Collecte et stockage des données
-            gestionnaire.collecter_donnees()
-            # Attendre 3 secondes avant la prochaine collecte
-            time.sleep(3)
-    except KeyboardInterrupt:
-        print("Arrêt de la collecte de données.")
-        # Créer un backup final à l'arrêt
-        gestionnaire_bdd.create_backup()
+
+    # Check if we should run once or continuously
+    run_once = "--once" in sys.argv
+
+    if run_once:
+        # Just collect once and exit
+        gestionnaire.collecter_donnees()
+        print("Données collectées une fois.")
+    else:
+        # Run continuously
+        try:
+            while True:
+                # Collecte et stockage des données
+                gestionnaire.collecter_donnees()
+                time.sleep(1)  # 1 second between collections for testing
+        except KeyboardInterrupt:
+            print("Arrêt de la collecte de données.")
+            # Créer un backup final à l'arrêt
+            gestionnaire_bdd.create_backup()
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ import sqlite3
 
 # Classe pour gérer les opérations sur la base de données
 class GestionnaireBDD:
-    def __init__(self, db_name='identifier.sqlite'):
+    def __init__(self, db_name='table_sondes.sqlite'):
         self.db_name = db_name
         self.backup_dir = 'backups'
         self.backup_interval = 300
@@ -97,7 +97,7 @@ class GestionnaireBDD:
         conn.close()
         return total
 
-    def purger_anciennes_donnees(self, limite=100):
+    def purger_anciennes_donnees(self, limite=500):
         """Supprime les entrées les plus anciennes pour maintenir la limite"""
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
@@ -139,7 +139,7 @@ class GestionnaireBDD:
             # Copier le fichier de la base de données
             shutil.copy2(self.db_name, backup_file)
 
-            # Nettoyer les anciens backups (garder seulement les 10 plus récents)
+            # Nettoyer les anciens backups (garder seulement les 3 plus récents)
             self.cleanup_old_backups()
 
             print(f"Backup créé avec succès: {backup_file}")
@@ -148,7 +148,7 @@ class GestionnaireBDD:
             print(f"Erreur lors de la création du backup: {e}")
             return False
 
-    def cleanup_old_backups(self, keep=10):
+    def cleanup_old_backups(self, keep=3):
         """Nettoie les anciens backups en gardant seulement les 'keep' plus récents"""
         try:
             # Lister tous les fichiers de backup

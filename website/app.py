@@ -78,23 +78,12 @@ def refresh_data():
 
         print(f"Running stockage_main: {stockage_main}")
 
-        # Use detached process on Windows
-        startupinfo = None
-        if os.name == 'nt':
-            startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            startupinfo.wShowWindow = 0  # SW_HIDE
-
         # First run stockage/main.py to collect new data
-        subprocess.Popen([sys.executable, stockage_main, "--once"],
-                        startupinfo=startupinfo,
-                        creationflags=subprocess.CREATE_NO_WINDOW)
+        subprocess.Popen([sys.executable, stockage_main, "--once"])
 
         # Then run collector.py to generate graphs
         collector_path = os.path.join(project_root, 'collector.py')
-        subprocess.Popen([sys.executable, collector_path],
-                        startupinfo=startupinfo,
-                        creationflags=subprocess.CREATE_NO_WINDOW)
+        subprocess.Popen([sys.executable, collector_path])
 
         # Redirect back to index page
         return redirect(url_for('index'))

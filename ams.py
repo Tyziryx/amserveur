@@ -32,26 +32,15 @@ def run_collector():
             project_root = os.path.dirname(os.path.abspath(__file__))
             stockage_main = os.path.join(project_root, "stockage", "main.py")
 
-            # Use detached process on Windows to run independently
-            startupinfo = None
-            if os.name == 'nt':
-                startupinfo = subprocess.STARTUPINFO()
-                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                startupinfo.wShowWindow = 0  # SW_HIDE
-
-            # Run with detached process
-            subprocess.Popen([sys.executable, stockage_main, "--once"],
-                             startupinfo=startupinfo,
-                             creationflags=subprocess.CREATE_NO_WINDOW)
+            # Run process
+            subprocess.Popen([sys.executable, stockage_main, "--once"])
 
             # Wait a bit for data collection
             time.sleep(5)
 
             # Run collector to generate graphs
             collector_path = os.path.join(project_root, "collector.py")
-            subprocess.Popen([sys.executable, collector_path],
-                             startupinfo=startupinfo,
-                             creationflags=subprocess.CREATE_NO_WINDOW)
+            subprocess.Popen([sys.executable, collector_path])
 
         except Exception as e:
             print(f"Erreur lors de la mise à jour des données: {e}")
@@ -65,14 +54,8 @@ def run_web_server():
     os.environ["FLASK_APP"] = "website/app.py"
     os.environ["FLASK_DEBUG"] = "0"  # Disable debug mode for stability
 
-    # Use CREATE_NEW_PROCESS_GROUP flag on Windows to make the process independent
-    flags = 0
-    if os.name == 'nt':
-        flags = subprocess.CREATE_NEW_PROCESS_GROUP
-
     web_process = subprocess.Popen(
-        [sys.executable, "-m", "flask", "run", "--host=0.0.0.0", "--no-reload"],
-        creationflags=flags
+        [sys.executable, "-m", "flask", "run", "--host=0.0.0.0", "--no-reload"]
     )
 
     processes.append(web_process)

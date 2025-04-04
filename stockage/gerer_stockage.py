@@ -10,19 +10,15 @@ import sqlite3
 
 # Classe pour gérer les opérations sur la base de données
 class GestionnaireBDD:
-    def __init__(self, db_name='table_sondes.sqlite'):
+    def __init__(self, db_name=None):
+        """Initialise le gestionnaire avec la base de données"""
+        # Définir le chemin par défaut si non fourni
+        if db_name is None:
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            db_name = os.path.join(project_root, 'table_sondes.sqlite')
+
         self.db_name = db_name
-        self.backup_dir = 'backups'
-        self.backup_interval = 300
         self.initialiser_bdd()
-
-        # Créer le dossier de backups s'il n'existe pas
-        if not os.path.exists(self.backup_dir):
-            os.makedirs(self.backup_dir)
-
-        # Démarrer le thread de backup
-        self.backup_thread = threading.Thread(target=self.backup_scheduler, daemon=True)
-        self.backup_thread.start()
 
     def initialiser_bdd(self):
         """Initialise la base de données et crée la table sondes si nécessaire"""
@@ -174,13 +170,13 @@ class GestionnaireBDD:
 
 # Classe pour gérer les sondes
 class GestionnaireSondes:
-    def __init__(self, config_sondes):
+    def __init__(self, config_sondes, db_name=None):
         """
         Initialise le gestionnaire avec la configuration des sondes
         config_sondes: liste de dictionnaires avec path et id pour chaque sonde
         """
         self.sondes = config_sondes
-        self.bdd = GestionnaireBDD()
+        self.bdd = GestionnaireBDD(db_name=db_name)
 
     def executer_sonde(self, sonde_path, sonde_id):
         """Exécute une sonde et récupère les données JSON"""

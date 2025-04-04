@@ -19,8 +19,17 @@ INTERVALLE_ALERTES = 30
 
 
 class GestionnaireAlertes:
-    def __init__(self, db_path='../stockage/identifier.sqlite', log_path='alertes/alertes.log'):
+    def __init__(self, db_path=None, log_path=None):
         """Initialise le gestionnaire d'alertes"""
+        # Obtenir le chemin absolu du projet
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Définir les chemins par défaut en utilisant des chemins absolus
+        if db_path is None:
+            db_path = os.path.join(project_root,"table_sondes.sqlite")
+        if log_path is None:
+            log_path = os.path.join(project_root, "alertes", "alertes.log")
+
         self.db_path = db_path
         self.log_path = log_path
         self.dernieres_alertes = {

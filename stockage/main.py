@@ -19,8 +19,7 @@ def main():
     # Initialisation du gestionnaire de sondes et de la BDD
     gestionnaire_bdd = GestionnaireBDD(db_name=db_name)
     gestionnaire = GestionnaireSondes(SONDES_CONFIG)
-    gestionnaire.bdd = gestionnaire_bdd
-
+    gestionnaire.bdd = gestionnaire_bdd  # Pour réutiliser la même instance
     print("\nDémarrage de la collecte de données...")
 
     # Check if we should run once or continuously

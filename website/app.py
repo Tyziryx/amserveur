@@ -1,10 +1,11 @@
 # website/app.py
-from flask import Flask, render_template, jsonify, redirect, url_for
-import sqlite3
 import os
+import sqlite3
 import subprocess
 import sys
 from datetime import datetime
+
+from flask import Flask, render_template, redirect, url_for
 
 app = Flask(__name__)
 
@@ -72,18 +73,12 @@ def index():
 def refresh_data():
     """Force une mise à jour des données sans quitter la page"""
     try:
-        # Get absolute paths
         project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        stockage_main = os.path.join(project_root, "stockage", "main.py")
+        run_check_path = os.path.join(project_root, "run_check.py")
 
-        print(f"Running stockage_main: {stockage_main}")
+        # Exécuter run_check.py pour actualiser les données
+        subprocess.run([sys.executable, run_check_path], timeout=30)
 
-        # First run stockage/main.py to collect new data
-        subprocess.Popen([sys.executable, stockage_main, "--once"])
-
-        # Then run collector.py to generate graphs
-        collector_path = os.path.join(project_root, 'collector.py')
-        subprocess.Popen([sys.executable, collector_path])
 
         # Redirect back to index page
         return redirect(url_for('index'))
@@ -94,4 +89,4 @@ def refresh_data():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=4000)

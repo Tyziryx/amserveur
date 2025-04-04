@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Configuration des seuils critiques (en pourcentage)
 SEUILS = {
     "cpu": 80,  # CPU usage > 80%
-    "ram": 1,  # RAM usage > 80%
+    "ram": 80,  # RAM usage > 80%
     "disk": 85  # Disk usage > 85%
 }
 

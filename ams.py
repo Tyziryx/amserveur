@@ -53,23 +53,6 @@ def run_collector():
 
 
 
-def run_web_server():
-    """Démarre le serveur web"""
-    os.environ["FLASK_APP"] = "website/app.py"
-    os.environ["FLASK_DEBUG"] = "0"  # Disable debug mode for stability
-
-    web_process = subprocess.Popen(
-        [sys.executable, "-m", "flask", "run", "--host=0.0.0.0", "--no-reload"]
-    )
-
-    processes.append(web_process)
-
-    try:
-        # Wait for the web server to terminate
-        web_process.wait()
-    except KeyboardInterrupt:
-        pass
-
 
 if __name__ == "__main__":
     # Register cleanup function
@@ -104,6 +87,3 @@ if __name__ == "__main__":
     collector_thread = threading.Thread(target=run_collector)
     collector_thread.daemon = True
     collector_thread.start()
-
-    # Démarrer le serveur web en premier plan
-    run_web_server()

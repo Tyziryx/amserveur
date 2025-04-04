@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Configuration des seuils critiques (en pourcentage)
 SEUILS = {
     "cpu": 80,  # CPU usage > 80%
-    "ram": 80,  # RAM usage > 80%
+    "ram": 1,  # RAM usage > 80%
     "disk": 85  # Disk usage > 85%
 }
 
@@ -155,7 +155,19 @@ Date et heure de l'alerte: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 def main():
     """Fonction principale"""
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Système de surveillance des alertes")
+    parser.add_argument("--check", action="store_true", help="Vérifier les alertes une seule fois puis quitter")
+    args = parser.parse_args()
+
     gestionnaire = GestionnaireAlertes()
+
+    if args.check:
+        print("Vérification unique des seuils d'alerte...")
+        gestionnaire.log("Vérification unique des seuils d'alerte")
+        gestionnaire.verifier_seuils()
+        return
 
     print(f"Démarrage du système d'alertes...")
     gestionnaire.log("Système d'alertes démarré")

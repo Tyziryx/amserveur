@@ -36,7 +36,7 @@ def main():
             while True:
                 # Collecte et stockage des données
                 gestionnaire.collecter_donnees()
-                time.sleep(1)  # 1 second between collections for testing
+                time.sleep(300)  # 1 second between collections for testing
         except KeyboardInterrupt:
             print("Arrêt de la collecte de données.")
             # Créer un backup final à l'arrêt

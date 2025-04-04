@@ -35,6 +35,7 @@ def run_collector():
             # Run process
             subprocess.Popen([sys.executable, stockage_main, "--once"])
 
+
             # Wait a bit for data collection
             time.sleep(5)
 
@@ -42,11 +43,14 @@ def run_collector():
             collector_path = os.path.join(project_root, "collector.py")
             subprocess.Popen([sys.executable, collector_path])
 
+            #verifie seuil des sondes
+            alertes_path = os.path.join(project_root, "alertes", "alertes.py")
+            alertes_proc = subprocess.Popen([sys.executable, alertes_path, "--check"])
+            processes.append(alertes_proc)
+
         except Exception as e:
             print(f"Erreur lors de la mise à jour des données: {e}")
 
-        # Sleep for 5 minutes
-        time.sleep(300)
 
 
 def run_web_server():
@@ -87,6 +91,11 @@ if __name__ == "__main__":
         # Generate graphs
         collector_path = os.path.join(project_root, "collector.py")
         subprocess.run([sys.executable, collector_path], timeout=30)
+
+        # Check alerts
+        print("Vérification initiale des alertes...")
+        alertes_path = os.path.join(project_root, "alertes", "alertes.py")
+        subprocess.run([sys.executable, alertes_path, "--check"], timeout=30)
 
     except Exception as e:
         print(f"Initial data collection error: {e}")

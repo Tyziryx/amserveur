@@ -146,7 +146,7 @@ def main():
 
     try:
         while True:
-            time.sleep(3600)
+            time.sleep(300)
             print(f"\nVérification à {time.strftime('%H:%M:%S')}...")
             check_and_update_alerts(db_path, url)
     except KeyboardInterrupt:

@@ -8,7 +8,7 @@ from datetime import datetime
 
 
 class GenerateurGraphiques:
-    def __init__(self, db_path='../stockage/table_sondes.sqlite', cert_db_path='../parseur/parseur.sqlite'):
+    def __init__(self, db_path='../table_sondes.sqlite', cert_db_path='../parseur/parseur.sqlite'):
         """
         Initialise le générateur de graphiques avec les chemins des bases de données
         """

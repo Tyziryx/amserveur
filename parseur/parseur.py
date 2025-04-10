@@ -79,7 +79,7 @@ def check_and_update_alerts(db_path, url):
     existing_alert = cursor.fetchone()
 
     if not existing_alert:
-        # Insertion de la nouvelle alerte
+        # Insertion de la nouvelle alerte si elle n'existe pas déjà
         cursor.execute('''
         INSERT INTO alertes (reference, date, titre, derniere_verification)
         VALUES (?, ?, ?, CURRENT_TIMESTAMP)

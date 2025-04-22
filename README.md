@@ -1,205 +1,197 @@
-# Documentation de AMS (Application Monitoring System)
+AdminMonitoring System (AMS)
+<img alt="Version" src="https://img.shields.io/badge/version-1.0-blue.svg">
+<img alt="Python" src="https://img.shields.io/badge/Python-3.6+-green.svg">
+<img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey.svg">
+📑 Table des matières
+Introduction
+Fonctionnalités
+Installation
+Architecture du projet
+Interface utilisateur
+Modules principaux
+Configuration avancée
+Dépannage
+Documentation technique
+Contributions
+Crédits
+📋 Introduction
+AdminMonitoring System (AMS) est une solution complète de surveillance système développée dans le cadre du cours de Système et Réseau. Cette application permet le suivi en temps réel des métriques essentielles d'un serveur, génère des visualisations graphiques et alerte en cas de dépassement de seuils critiques.
 
-## Présentation générale
+Objectifs pédagogiques:
 
-AMS est une solution de surveillance système qui permet de :
-- Surveiller l'utilisation CPU, RAM et stockage disque
-- Visualiser les données historiques via des graphiques
-- Recevoir des alertes par email en cas de dépassement de seuils
-- Afficher les dernières alertes de sécurité du CERT
+Application pratique des concepts de programmation système
+Utilisation de Python pour la surveillance de ressources
+Implémentation d'une base de données pour le stockage de métriques
+Création d'une interface web avec Flask
+Automatisation des alertes et notifications
+✨ Fonctionnalités
+Surveillance système
+Monitoring CPU: Suivi du pourcentage d'utilisation processeur
+Monitoring RAM: Suivi du pourcentage d'utilisation mémoire
+Monitoring Disque: Suivi du pourcentage d'espace disque utilisé
+Visualisation des données
+Graphiques historiques: Visualisation des tendances d'utilisation
+Interface web: Tableau de bord ergonomique et responsive
+Actualisation en temps réel: Rafraîchissement sur demande des données
+Système d'alertes
+Alertes par email: Notifications automatiques
+Seuils configurables: Personnalisation des niveaux d'alerte
+Anti-spam: Intervalle minimal entre les alertes similaires
+Sécurité
+Veille CERT: Intégration des alertes de sécurité du CERT-FR
+Affichage centralisé: Toutes les informations critiques au même endroit
+🔧 Installation
+Prérequis
+Système Linux/macOS
+Python 3.6+
+pip (gestionnaire de paquets Python)
+Connexion Internet (pour les mises à jour et alertes CERT)
+Méthode rapide (recommandée)
+Installation manuelle des dépendances
+Si le script automatique échoue, vous pouvez installer manuellement les dépendances:
 
-## Installation
+🏗 Architecture du projet
+Structure des répertoires
+Flux de données
+Les sondes collectent les données brutes du système
+Le module de stockage enregistre ces données dans une base SQLite
+Le module graphiques génère des visualisations à partir de ces données
+Le module alertes vérifie les dépassements de seuils
+L'interface web affiche toutes ces informations de façon centralisée
+🖥 Interface utilisateur
+Démarrage de l'application
+Accédez ensuite à votre tableau de bord via: http://localhost:4000
 
-### Prérequis
-- Système Linux/macOS
-- Python 3.6+
-- pip (gestionnaire de paquets Python)
+Éléments de l'interface
+Cards de métriques: Affichent les valeurs actuelles CPU, RAM, disque
+Graphiques historiques: Visualisation temporelle des métriques
+Tableau des alertes CERT: Affiche les alertes de sécurité récentes
+Bouton "Rafraîchir": Met à jour les données et graphiques manuellement
+Utilisation quotidienne recommandée
+Consultez régulièrement le tableau de bord pour surveiller l'état du système
+Configurez le système pour démarrer automatiquement au boot (voir ci-dessous)
+Configurez les alertes email avec vos paramètres SMTP personnels
+Configuration de démarrage automatique (systemd)
+Créez un fichier service systemd:
 
-### Installation automatique
+Contenu du fichier:
 
-1. Clonez le dépôt :
-```bash
-git clone https://github.com/Tyziryx/amserveur.git
-cd amserveur
-```
+Activez le service:
 
-2. Exécutez le script d'installation :
-```bash
-chmod +x update.sh
-./update.sh
-```
+📦 Modules principaux
+Système de sondes (sondes/)
+Les sondes sont des scripts légers qui collectent les métriques systèmes:
 
-Ce script installe toutes les dépendances nécessaires :
-- Python 3 et pip
-- Bibliothèques système (jq, sqlite3)
-- Modules Python (Flask, Matplotlib, Pandas, etc.)
-- Configure l'environnement et vérifie les permissions
+cpu.py: Utilise psutil pour mesurer l'utilisation CPU
+ram.py: Analyse la mémoire via psutil
+disk.sh: Script bash qui utilise df pour l'espace disque
+Chaque sonde renvoie un objet JSON standardisé pour faciliter l'interopérabilité.
 
-## Architecture du projet
+Gestion des données (stockage/)
+Module central qui gère la persistance des données:
 
-### Structure des répertoires
-```
-amserveur/
-├── alertes/            # Gestion des alertes système
-├── graphiques/         # Génération des graphiques
-├── mail/               # Configuration et envoi des emails
-├── parseur/            # Surveillance des alertes CERT
-├── sondes/             # Scripts de collecte des données système
-├── stockage/           # Gestion de la base de données
-├── website/            # Interface web Flask
-├── ams.py              # Script principal
-├── collector.py        # Génération des graphiques
-├── run_check.py        # Mise à jour manuelle des données
-└── update.sh           # Installation automatique
-```
+gerer_stockage.py:
 
-## Démarrage de l'application
+GestionnaireBDD: Interface avec la base SQLite
+GestionnaireSondes: Exécute les sondes et enregistre les données
+main.py: Orchestration de la collecte périodique
 
-1. Lancez l'application principale :
-```bash
-python3 ams.py
-```
+back_up.py: Création de sauvegardes
 
-2. Accédez à l'interface web :
-```
-http://localhost:4000
-```
+back_up_restore.py: Restauration de données
 
-## Modules principaux
+Visualisation (graphiques/)
+Module responsable de la création des graphiques:
 
-### Sondes (sondes/)
-Ces scripts collectent les données système :
+graphic.py: Utilise Matplotlib pour créer des visualisations temporelles
+GenerateurGraphiques: Classe principale qui gère la création des graphiques
+Système d'alertes (alertes/)
+Module qui détecte et notifie les situations critiques:
 
-- `cpu.py` : Mesure l'utilisation CPU (%)
-- `ram.py` : Mesure l'utilisation mémoire (%)
-- `disk.sh` : Mesure l'utilisation d'espace disque (%)
+alertes.py:
+Vérifie si les métriques dépassent les seuils configurés
+Envoie des emails d'alerte via le module mail
+Maintient un journal des alertes pour référence
+Interface web (website/)
+Application web Flask qui centralise toutes les informations:
 
-### Stockage des données (stockage/)
-Gère l'enregistrement des données collectées :
+app.py: Serveur Flask avec routes / et /refresh
+index.html: Template Bootstrap responsive
+Surveillance CERT (parseur/)
+Module qui surveille les alertes de sécurité officielles:
 
-- `gerer_stockage.py` : Contient deux classes :
-  - `GestionnaireBDD` : Gère les opérations CRUD sur la base SQLite
-  - `GestionnaireSondes` : Exécute les sondes et stocke leurs valeurs
+parseur.py:
+Analyse les alertes du CERT-FR
+Stocke les alertes dans une base de données
+Met à jour les informations périodiquement
+⚙ Configuration avancée
+Modification des seuils d'alerte
+Éditez le fichier alertes.py:
 
-- `main.py` : Script de collecte des données qui exécute les sondes à intervalles réguliers
+Configuration de l'envoi d'emails
+Créez le fichier mail/config.py s'il n'existe pas:
+Modifiez mail.py pour configurer votre serveur SMTP:
+Paramétrage de l'interface web
+Pour modifier le port ou activer le mode debug, éditez app.py:
 
-### Graphiques (graphiques/)
-Génère des graphiques historiques des données :
+Configuration de la rétention de données
+Pour modifier la politique de conservation des données, éditez gerer_stockage.py:
 
-- `graphic.py` : Crée des graphiques pour CPU, RAM et disque
+Fréquence de collecte
+Modifiez l'intervalle de collecte dans main.py:
 
-### Alertes (alertes/)
-Surveille les dépassements de seuils et envoie des alertes :
+🛠 Dépannage
+Problèmes courants et solutions
+Base de données inaccessible ou corrompue
+Erreurs de permission sur les scripts
+Problèmes d'envoi d'emails
+Interface web inaccessible
+Aucune donnée affichée
+Journal des erreurs
+Le système maintient plusieurs fichiers de log:
 
-- `alertes.py` : Vérifie les valeurs par rapport aux seuils configurés
-  - Seuils par défaut : CPU (80%), RAM (80%), disque (85%)
+alertes/alertes.log: Journal des alertes envoyées
+cron.log: Si configuré avec cron, journal des exécutions périodiques
+📖 Documentation technique
+Structure de la base de données
+Table sondes (table_sondes.sqlite)
+Table alertes (parseur.sqlite)
+Format des données des sondes
+Chaque sonde retourne un objet JSON avec une clé unique:
 
-### E-mail (mail/)
-Configure et gère l'envoi d'emails :
+Algorithme de détection des alertes
+Récupération de la dernière valeur de chaque métrique
+Comparaison avec les seuils configurés
+Si dépassement, vérification de l'historique récent
+Si aucune alerte similaire récente, envoi d'un email
+Mise à jour du journal des alertes
+Cycle de vie des données
+Collecte: Exécution des sondes à intervalles réguliers
+Stockage: Insertion dans la base SQLite
+Traitement: Génération des graphiques, vérification des seuils
+Purge: Suppression des données anciennes (limite configurable)
+Sauvegarde: Création périodique de backups
+👥 Contributions
+Ce projet a été développé dans un contexte éducatif et peut être amélioré de plusieurs façons:
 
-- `mail.py` : Fonctions d'envoi d'emails
-- `config.py` : Contient le mot de passe SMTP (à configurer)
+Améliorations possibles
+Ajout de nouvelles sondes (température, charge système, etc.)
+Support pour la surveillance de plusieurs machines
+Authentification sur l'interface web
+API REST pour l'intégration avec d'autres services
+Tests unitaires et fonctionnels
+Containerisation avec Docker
+Bonnes pratiques pour contribuer
+Forker le projet
+Créer une branche pour votre fonctionnalité
+Soumettre une Pull Request avec une description détaillée
+Respecter les normes de codage existantes (PEP8 pour Python)
+📝 Crédits
+Développeur: Alexi Miaille
+Contexte: Cours de Système et Réseau (L2 Informatique)
+Année: 2023
 
-### Interface Web (website/)
-Interface utilisateur construite avec Flask :
+Licence
+Ce projet est distribué sous licence MIT à des fins éducatives uniquement.
 
-- `app.py` : Serveur web Flask configuré sur le port 4000
-- `templates/` : Templates HTML (interface utilisateur)
-- `static/` : Fichiers statiques (graphiques, CSS)
-
-### Parseur CERT (parseur/)
-Surveille les alertes de sécurité du CERT :
-
-- `parseur.py` : Récupère et analyse les alertes récentes du CERT-FR
-
-## Scripts principaux
-
-### ams.py
-Script principal qui orchestre toutes les fonctionnalités :
-- Lance la collecte de données
-- Génère les graphiques
-- Vérifie les alertes
-- Démarre le serveur web Flask
-
-### collector.py
-Génère les graphiques pour l'interface web :
-- Récupère les données dans la base SQLite
-- Créé les graphiques avec Matplotlib
-- Les sauvegarde dans `website/static/`
-
-### run_check.py
-Exécute une mise à jour manuelle des données :
-- Collecte des nouvelles données
-- Génère des graphiques actualisés
-- Vérifie les alertes
-
-## Configuration personnalisée
-
-### Modifier les seuils d'alerte
-Éditez `alertes/alertes.py` et modifiez le dictionnaire `SEUILS` :
-```python
-SEUILS = {
-    "cpu": 80,  # CPU > 80%
-    "ram": 80,  # RAM > 80%
-    "disk": 85  # Disque > 85%
-}
-```
-
-### Configurer l'envoi d'emails
-1. Modifiez `mail/config.py` pour définir votre mot de passe
-2. Modifiez `mail/mail.py` pour configurer vos paramètres SMTP
-
-### Changer le port du serveur web
-Modifiez la ligne dans `website/app.py` :
-```python
-app.run(debug=True, host='0.0.0.0', port=4000)
-```
-
-## Fonctionnalités clés
-
-### Collecte automatique des données
-Les données système sont collectées toutes les 5 minutes et stockées dans une base SQLite.
-
-### Graphiques historiques
-Des graphiques d'utilisation CPU, RAM et disque sont générés et accessibles via l'interface web.
-
-### Alertes par email
-Des alertes sont envoyées lorsque l'utilisation dépasse les seuils configurés, avec un délai minimal de 30 minutes entre deux alertes similaires.
-
-### Interface web responsive
-Une interface basée sur Bootstrap affiche les statistiques actuelles, les graphiques historiques et les alertes CERT.
-
-### Bouton "Rafraîchir"
-Le bouton sur l'interface permet de forcer une mise à jour des données sans redémarrer l'application.
-
-## Dépannage
-
-### Base de données corrompue
-```bash
-rm table_sondes.sqlite
-python3 run_check.py
-```
-
-### Erreurs de permission
-```bash
-chmod +x sondes/disk.sh
-chmod +x update.sh
-```
-
-### Problèmes d'envoi d'emails
-Vérifiez `mail/config.py` et les logs dans `alertes/alertes/alertes.log`
-
-### Redémarrage complet
-```bash
-pkill -f ams.py
-python3 ams.py
-```
-
-## Maintenance
-
-- La base de données est automatiquement purgée pour conserver les 500 entrées les plus récentes
-- Les graphiques sont régulièrement mis à jour lors de la collecte de données
-
----
-
-Développé par Alexi Miaille pour le cours de Système et Réseau.
+"La simplicité est la sophistication suprême." - Leonardo da Vinci

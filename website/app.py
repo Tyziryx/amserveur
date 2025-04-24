@@ -49,7 +49,7 @@ def index():
                                     'parseur.sqlite')
         cert_conn = sqlite3.connect(cert_db_path)
         cert_cursor = cert_conn.cursor()
-        cert_cursor.execute("SELECT date, titre FROM alertes ORDER BY date DESC LIMIT 10")
+        cert_cursor.execute("SELECT date, titre FROM alertes ORDER BY date DESC LIMIT 1")
         alertes = [{"date": row[0], "titre": row[1]} for row in cert_cursor.fetchall()]
 
         cert_conn.close()

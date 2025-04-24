@@ -1,0 +1,91 @@
+# Journal des alertes - Créé le 2025-04-04 14:00:02
+
+[2025-04-04 14:00:02] Vérification unique des seuils d'alerte
+[2025-04-04 14:00:02] Erreur lors de la lecture des données de cpu: no such table: sondes
+[2025-04-04 14:00:02] Erreur lors de la lecture des données de ram: no such table: sondes
+[2025-04-04 14:00:02] Erreur lors de la lecture des données de disk: no such table: sondes
+[2025-04-04 14:01:50] Vérification unique des seuils d'alerte
+[2025-04-04 14:01:50] Erreur lors de la lecture des données de cpu: no such table: sondes
+[2025-04-04 14:01:50] Erreur lors de la lecture des données de ram: no such table: sondes
+[2025-04-04 14:01:50] Erreur lors de la lecture des données de disk: no such table: sondes
+[2025-04-04 14:03:52] Vérification unique des seuils d'alerte
+[2025-04-04 14:03:52] Erreur lors de la lecture des données de cpu: no such table: sondes
+[2025-04-04 14:03:52] Erreur lors de la lecture des données de ram: no such table: sondes
+[2025-04-04 14:03:52] Erreur lors de la lecture des données de disk: no such table: sondes
+[2025-04-04 14:09:46] Vérification unique des seuils d'alerte
+[2025-04-04 14:09:46] Sonde cpu: 26.9% (normal)
+[2025-04-04 14:09:47] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 84.1%
+[2025-04-04 14:09:47] Alerte ram envoyée: 84.1% > 1%
+[2025-04-04 14:09:47] Sonde disk: 20.0% (normal)
+[2025-04-04 14:17:12] Vérification unique des seuils d'alerte
+[2025-04-04 14:17:12] Sonde cpu: 26.9% (normal)
+[2025-04-04 14:17:13] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 84.1%
+[2025-04-04 14:17:13] Alerte ram envoyée: 84.1% > 1%
+[2025-04-04 14:17:13] Sonde disk: 20.0% (normal)
+[2025-04-04 14:21:12] Vérification unique des seuils d'alerte
+[2025-04-04 14:21:12] Sonde cpu: 26.9% (normal)
+[2025-04-04 14:21:13] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 84.1%
+[2025-04-04 14:21:13] Alerte ram envoyée: 84.1% > 1%
+[2025-04-04 14:21:13] Sonde disk: 20.0% (normal)
+[2025-04-04 14:23:48] Vérification unique des seuils d'alerte
+[2025-04-04 14:23:48] Sonde cpu: 16.6% (normal)
+[2025-04-04 14:23:49] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
+[2025-04-04 14:23:49] Alerte ram envoyée: 83.9% > 1%
+[2025-04-04 14:23:49] Sonde disk: 19.0% (normal)
+[2025-04-04 14:31:03] Vérification unique des seuils d'alerte
+[2025-04-04 14:31:03] Sonde cpu: 19.4% (normal)
+[2025-04-04 14:31:05] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.3%
+[2025-04-04 14:31:05] Alerte ram envoyée: 83.3% > 1%
+[2025-04-04 14:31:05] Sonde disk: 19.0% (normal)
+[2025-04-04 14:31:39] Vérification unique des seuils d'alerte
+[2025-04-04 14:31:39] Sonde cpu: 12.1% (normal)
+[2025-04-04 14:31:39] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.1%
+[2025-04-04 14:31:39] Alerte ram envoyée: 83.1% > 1%
+[2025-04-04 14:31:39] Sonde disk: 19.0% (normal)
+[2025-04-04 14:36:31] Vérification unique des seuils d'alerte
+[2025-04-04 14:36:31] Sonde cpu: 14.6% (normal)
+[2025-04-04 14:36:32] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
+[2025-04-04 14:36:32] Alerte ram envoyée: 83.9% > 1%
+[2025-04-04 14:36:32] Sonde disk: 20.0% (normal)
+[2025-04-04 14:36:37] Vérification unique des seuils d'alerte
+[2025-04-04 14:36:37] Sonde cpu: 22.2% (normal)
+[2025-04-04 14:36:38] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
+[2025-04-04 14:36:38] Alerte ram envoyée: 83.9% > 1%
+[2025-04-04 14:36:38] Sonde disk: 20.0% (normal)
+[2025-04-04 15:33:00] Vérification unique des seuils d'alerte
+[2025-04-04 15:33:00] Sonde cpu: 23.0% (normal)
+[2025-04-04 15:33:00] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.6%
+[2025-04-04 15:33:00] Alerte ram envoyée: 83.6% > 80%
+[2025-04-04 15:33:00] Sonde disk: 20.0% (normal)
+[2025-04-04 15:33:09] Vérification unique des seuils d'alerte
+[2025-04-04 15:33:09] Sonde cpu: 35.9% (normal)
+[2025-04-04 15:33:09] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 84.8%
+[2025-04-04 15:33:09] Alerte ram envoyée: 84.8% > 80%
+[2025-04-04 15:33:09] Sonde disk: 20.0% (normal)
+[2025-04-04 15:44:48] Vérification unique des seuils d'alerte
+[2025-04-04 15:44:48] Sonde cpu: 35.9% (normal)
+[2025-04-04 15:44:49] Erreur lors de l'envoi de l'alerte ram: No module named 'certifi'
+[2025-04-04 15:44:49] Sonde disk: 20.0% (normal)
+[2025-04-04 15:47:42] Vérification unique des seuils d'alerte
+[2025-04-04 15:47:42] Sonde cpu: 35.9% (normal)
+[2025-04-04 15:47:42] Erreur lors de l'envoi de l'alerte ram: No module named 'certifi'
+[2025-04-04 15:47:42] Sonde disk: 20.0% (normal)
+[2025-04-04 15:50:43] Vérification unique des seuils d'alerte
+[2025-04-04 15:50:43] Sonde cpu: 49.1% (normal)
+[2025-04-04 15:50:44] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 82.5%
+[2025-04-04 15:50:44] Alerte ram envoyée: 82.5% > 80%
+[2025-04-04 15:50:44] Sonde disk: 20.0% (normal)
+[2025-04-04 15:51:01] Vérification unique des seuils d'alerte
+[2025-04-04 15:51:01] Sonde cpu: 49.1% (normal)
+[2025-04-04 15:51:01] Erreur lors de l'envoi de l'alerte ram: No module named 'certifi'
+[2025-04-04 15:51:01] Sonde disk: 20.0% (normal)
+[2025-04-04 15:53:43] Vérification unique des seuils d'alerte
+[2025-04-04 15:53:43] Sonde cpu: 50.1% (normal)
+[2025-04-04 15:53:44] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 82.8%
+[2025-04-04 15:53:44] Alerte ram envoyée: 82.8% > 80%
+[2025-04-04 15:53:44] Sonde disk: 20.0% (normal)
+[2025-04-04 15:54:49] Vérification unique des seuils d'alerte
+[2025-04-04 15:54:49] Sonde cpu: 52.2% (normal)
+[2025-04-04 15:54:50] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
+[2025-04-04 15:54:50] Alerte ram envoyée: 83.9% > 80%
+[2025-04-04 15:54:50] Sonde disk: 20.0% (normal)

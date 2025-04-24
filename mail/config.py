@@ -1,0 +1,1 @@
+SMTP_PASSWORD = "Esteban2005@Tiago2005@"

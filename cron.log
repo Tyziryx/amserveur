@@ -1,0 +1,43 @@
+cd: string not in pwd: /Users/alexi/Desktop/amserveur/run_cron.sh
+Base de données /Users/alexi/Desktop/amserveur/table_sondes.sqlite initialisée avec succès.
+Base de données /Users/alexi/Desktop/amserveur/table_sondes.sqlite initialisée avec succès.
+
+Démarrage de la collecte de données...
+Données de cpu: 52.2 insérées à 2025-04-04 15:54:47
+Données de ram: 83.9 insérées à 2025-04-04 15:54:47
+Données de disk: 20 insérées à 2025-04-04 15:54:47
+Données collectées une fois.
+Starting collector...
+Generating graphs...
+Using database: /Users/alexi/Desktop/amserveur/table_sondes.sqlite
+Output directory for graphs: /Users/alexi/Desktop/amserveur/website/static
+Ancien graphique supprimé: /Users/alexi/Desktop/amserveur/website/static/cpu_usage.png
+Ancien graphique supprimé: /Users/alexi/Desktop/amserveur/website/static/ram_usage.png
+Ancien graphique supprimé: /Users/alexi/Desktop/amserveur/website/static/disk_usage.png
+Opening database: /Users/alexi/Desktop/amserveur/table_sondes.sqlite
+Retrieved 18 CPU data points
+Retrieved 18 RAM data points
+Retrieved 21 Disk data points
+Graphique CPU enregistré dans /Users/alexi/Desktop/amserveur/website/static/cpu_usage.png
+Opening database: /Users/alexi/Desktop/amserveur/table_sondes.sqlite
+Retrieved 18 CPU data points
+Retrieved 18 RAM data points
+Retrieved 21 Disk data points
+Graphique RAM enregistré dans /Users/alexi/Desktop/amserveur/website/static/ram_usage.png
+Opening database: /Users/alexi/Desktop/amserveur/table_sondes.sqlite
+Retrieved 18 CPU data points
+Retrieved 18 RAM data points
+Retrieved 21 Disk data points
+Graphique disque enregistré dans /Users/alexi/Desktop/amserveur/website/static/disk_usage.png
+Génération de tous les graphiques terminée.
+Graphs generated and saved to /Users/alexi/Desktop/amserveur/website/static
+Graph generation completed
+Vérification unique des seuils d'alerte...
+[2025-04-04 15:54:49] Vérification unique des seuils d'alerte
+[2025-04-04 15:54:49] Sonde cpu: 52.2% (normal)
+Email envoyé avec succès: "ALERTE - Mémoire RAM critique: 83.9%"
+[2025-04-04 15:54:50] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
+[2025-04-04 15:54:50] Alerte ram envoyée: 83.9% > 80%
+[2025-04-04 15:54:50] Sonde disk: 20.0% (normal)
+Exécution de la collecte de données...
+Collecte de données terminée avec succès

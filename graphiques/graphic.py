@@ -41,43 +41,19 @@ class GenerateurGraphiques:
             ram_df = pd.read_sql_query(ram_query, conn)
             disk_df = pd.read_sql_query(disk_query, conn)
 
-            # Convert timestamp to datetime with proper timezone handling
+            # Simple conversion sans gestion de fuseau horaire
             for df in [cpu_df, ram_df, disk_df]:
                 if not df.empty:
-                    # Assurez-vous que les timestamps sont correctement interprétés avec le bon fuseau horaire
-                    df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True).dt.tz_convert('Europe/Paris')
+                    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
                     df['valeur'] = pd.to_numeric(df['valeur'], errors='coerce')
-
-            conn.close()
-            return cpu_df, ram_df, disk_df
-        except Exception as e:
-            print(f"Error getting sensor data: {e}")
-            import traceback
-            traceback.print_exc()
-            return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
-
-            # La table existe, continuer normalement - UPDATED COLUMN NAMES
-            cpu_df = pd.read_sql_query(
-                "SELECT timestamp_complet as timestamp, valeur FROM sondes WHERE nom_sonde = 'cpu'", conn)
-            ram_df = pd.read_sql_query(
-                "SELECT timestamp_complet as timestamp, valeur FROM sondes WHERE nom_sonde = 'ram'", conn)
-            disk_df = pd.read_sql_query(
-                "SELECT timestamp_complet as timestamp, valeur FROM sondes WHERE nom_sonde = 'disk'", conn)
-
-            # Convertir les valeurs en nombres
-            for df in [cpu_df, ram_df, disk_df]:
-                if not df.empty:
-                    df['valeur'] = pd.to_numeric(df['valeur'], errors='coerce')
-
-            # Convertir les timestamps en datetime
-            for df in [cpu_df, ram_df, disk_df]:
-                if not df.empty:
-                    df['timestamp'] = pd.to_datetime(df['timestamp'])
+                    print(f"Premier timestamp dans DataFrame: {df['timestamp'].iloc[0] if len(df) > 0 else 'aucun'}")
 
             conn.close()
             return cpu_df, ram_df, disk_df
         except Exception as e:
             print(f"Erreur lors de la récupération des données: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
     def _get_alertes_data(self):
@@ -160,10 +136,9 @@ class GenerateurGraphiques:
             plt.grid(True)
             plt.ylim(0, 100)
 
-            # Format de date sur l'axe X avec heures complètes
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
-            plt.gca().xaxis.set_major_locator(mdates.MinuteLocator(interval=15))  # Graduations toutes les 15 minutes
-            plt.gcf().autofmt_xdate(rotation=45)  # Rotation pour meilleure lisibilité
+            # Format de date sur l'axe X
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
+            plt.gcf().autofmt_xdate()
 
             # Enregistrer le graphique
             plt.tight_layout()

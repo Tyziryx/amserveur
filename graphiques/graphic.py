@@ -123,8 +123,11 @@ class GenerateurGraphiques:
             for i in positions:
                 if i < len(ram_df) and not pd.isna(ram_df['timestamp'].iloc[i]):
                     try:
-                        # Extraire juste l'heure et les minutes
-                        labels.append(ram_df['timestamp'].iloc[i].strftime('%H:%M'))
+                        # Extraire juste l'heure et les minutes ET AJOUTER 2 HEURES
+                        timestamp = ram_df['timestamp'].iloc[i]
+                        # Ajouter 2 heures pour corriger le décalage
+                        timestamp_corrige = timestamp + pd.Timedelta(hours=2)
+                        labels.append(timestamp_corrige.strftime('%H:%M'))
                     except:
                         labels.append(str(i))
                 else:
@@ -174,8 +177,10 @@ class GenerateurGraphiques:
             for i in positions:
                 if i < len(cpu_df) and not pd.isna(cpu_df['timestamp'].iloc[i]):
                     try:
-                        # Extraire juste l'heure et les minutes
-                        labels.append(cpu_df['timestamp'].iloc[i].strftime('%H:%M'))
+                        timestamp = cpu_df['timestamp'].iloc[i]
+                        # Ajouter 2 heures pour corriger le décalage
+                        timestamp_corrige = timestamp + pd.Timedelta(hours=2)
+                        labels.append(timestamp_corrige.strftime('%H:%M'))
                     except:
                         labels.append(str(i))
                 else:
@@ -225,8 +230,10 @@ class GenerateurGraphiques:
             for i in positions:
                 if i < len(disk_df) and not pd.isna(disk_df['timestamp'].iloc[i]):
                     try:
-                        # Extraire juste l'heure et les minutes
-                        labels.append(disk_df['timestamp'].iloc[i].strftime('%H:%M'))
+                        timestamp = disk_df['timestamp'].iloc[i]
+                        # Ajouter 2 heures pour corriger le décalage
+                        timestamp_corrige = timestamp + pd.Timedelta(hours=2)
+                        labels.append(timestamp_corrige.strftime('%H:%M'))
                     except:
                         labels.append(str(i))
                 else:

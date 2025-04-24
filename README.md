@@ -195,13 +195,17 @@ Module qui surveille les alertes de sécurité officielles:
 ## ⚙ Configuration avancée
 
 ### Modification des seuils d'alerte
-Éditez le fichier `alertes.py`:
+Le système permet de configurer les seuils d'alerte facilement via un fichier JSON sans avoir à modifier le code source.
 
-```python
-SEUILS = {
-    'cpu': 80,    # Pourcentage d'utilisation CPU
-    'ram': 85,    # Pourcentage d'utilisation RAM
-    'disk': 90,   # Pourcentage d'espace disque utilisé
+#### Utilisation du fichier seuils.json
+Éditez le fichier `alertes/seuils.json` pour personnaliser vos seuils d'alertes:
+
+```json
+{
+  "cpu": 90,     // Pourcentage d'utilisation CPU
+  "ram": 80,     // Pourcentage d'utilisation RAM
+  "disk": 85,    // Pourcentage d'espace disque utilisé
+  "intervalle_alertes": 30  // Minutes entre deux alertes du même type
 }
 ```
 

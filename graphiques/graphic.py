@@ -41,18 +41,12 @@ class GenerateurGraphiques:
             ram_df = pd.read_sql_query(ram_query, conn)
             disk_df = pd.read_sql_query(disk_query, conn)
 
-            # Convert timestamp to datetime
-            if not cpu_df.empty:
-                cpu_df['timestamp'] = pd.to_datetime(cpu_df['timestamp'])
-                print(f"Retrieved {len(cpu_df)} CPU data points")
-
-            if not ram_df.empty:
-                ram_df['timestamp'] = pd.to_datetime(ram_df['timestamp'])
-                print(f"Retrieved {len(ram_df)} RAM data points")
-
-            if not disk_df.empty:
-                disk_df['timestamp'] = pd.to_datetime(disk_df['timestamp'])
-                print(f"Retrieved {len(disk_df)} Disk data points")
+            # Convert timestamp to datetime with proper timezone handling
+            for df in [cpu_df, ram_df, disk_df]:
+                if not df.empty:
+                    # Assurez-vous que les timestamps sont correctement interprétés avec le bon fuseau horaire
+                    df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True).dt.tz_convert('Europe/Paris')
+                    df['valeur'] = pd.to_numeric(df['valeur'], errors='coerce')
 
             conn.close()
             return cpu_df, ram_df, disk_df
@@ -166,9 +160,10 @@ class GenerateurGraphiques:
             plt.grid(True)
             plt.ylim(0, 100)
 
-            # Format de date sur l'axe X
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
-            plt.gcf().autofmt_xdate()
+            # Format de date sur l'axe X avec heures complètes
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
+            plt.gca().xaxis.set_major_locator(mdates.MinuteLocator(interval=15))  # Graduations toutes les 15 minutes
+            plt.gcf().autofmt_xdate(rotation=45)  # Rotation pour meilleure lisibilité
 
             # Enregistrer le graphique
             plt.tight_layout()

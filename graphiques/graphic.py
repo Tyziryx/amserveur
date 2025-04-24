@@ -136,28 +136,37 @@ class GenerateurGraphiques:
                 return
 
             plt.figure(figsize=(12, 6))
-            plt.plot(cpu_df['timestamp'], cpu_df['valeur'], 'b-', linewidth=2)
+            
+            # Utiliser une approche numérique au lieu des dates
+            x = range(len(cpu_df))
+            plt.plot(x, cpu_df['valeur'], 'b-', linewidth=2)
+            
+            # Créer des étiquettes manuellement à partir des timestamps
+            n_ticks = min(10, len(cpu_df))  # Maximum 10 étiquettes sur l'axe X
+            step = max(1, len(cpu_df) // n_ticks)
+            
+            # Créer des positions et des étiquettes pour l'axe X
+            positions = range(0, len(cpu_df), step)
+            labels = []
+            
+            for i in positions:
+                if i < len(cpu_df) and not pd.isna(cpu_df['timestamp'].iloc[i]):
+                    try:
+                        # Extraire juste l'heure et les minutes
+                        labels.append(cpu_df['timestamp'].iloc[i].strftime('%H:%M'))
+                    except:
+                        labels.append(str(i))
+                else:
+                    labels.append(str(i))
+            
+            plt.xticks(positions, labels, rotation=45)
+            
             plt.title('Utilisation CPU')
             plt.ylabel('Pourcentage (%)')
             plt.xlabel('Heure')
             plt.grid(True)
             plt.ylim(0, 100)
-
-            # Format de date sur l'axe X - version simplifiée et robuste
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-            # Plus d'options pour l'affichage de l'axe X
-            plt.gcf().autofmt_xdate()
             
-            # Forcer la localisation
-            import locale
-            try:
-                locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
-            except:
-                try:
-                    locale.setlocale(locale.LC_TIME, 'fr_FR')
-                except:
-                    pass
-
             # Enregistrer le graphique
             plt.tight_layout()
             plt.savefig(f'{self.output_dir}/cpu_usage.png')
@@ -165,6 +174,8 @@ class GenerateurGraphiques:
             print(f"Graphique CPU enregistré dans {self.output_dir}/cpu_usage.png")
         except Exception as e:
             print(f"Erreur lors de la génération du graphique CPU: {str(e)}")
+            import traceback
+            traceback.print_exc()
 
     def generer_graphique_disque(self):
         """Génère un graphique pour l'utilisation du disque"""

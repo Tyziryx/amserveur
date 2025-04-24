@@ -195,12 +195,11 @@ class GenerateurGraphiques:
             plt.grid(True)
             plt.ylim(0, 100)
 
-            # Format de date sur l'axe X
+            # Format de date sur l'axe X , affiche seulement l'heure et commence a 00H toutes les 15 minutes ap
             plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
             plt.gcf().autofmt_xdate()
 
             # Enregistrer le graphique
-            plt.tight_layout()
             plt.savefig(f'{self.output_dir}/disk_usage.png')
             plt.close()
             print(f"Graphique disque enregistré dans {self.output_dir}/disk_usage.png")

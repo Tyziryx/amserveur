@@ -1,5 +1,5 @@
 {
-    "cpu": 80,
+    "cpu": 90,
     "ram": 80,
     "disk": 85,
     "intervalle_alertes": 30

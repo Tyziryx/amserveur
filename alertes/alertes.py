@@ -9,20 +9,20 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Chemin par défaut pour le fichier de configuration
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),"seuils.json")
+DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seuils.json")
 
 # Valeurs par défaut au cas où le fichier n'existe pas
 DEFAULT_SEUILS = {
-    "cpu": 80,  # CPU usage > 80%
-    "ram": 80,  # RAM usage > 80%
-    "disk": 85  # Disk usage > 85%
+    "cpu": 80,  # % d'utilisation
+    "ram": 80,  # % d'utilisation
+    "disk": 85  # % d'utilisation
 }
-DEFAULT_INTERVALLE_ALERTES = 30
+DEFAULT_INTERVALLE_ALERTES = 30  # minutes
 
 
 class GestionnaireAlertes:
     def __init__(self, db_path=None, log_path=None, config_path=DEFAULT_CONFIG_PATH):
-        """Initialise le gestionnaire d'alertes"""
+        """Initialise le gestionnaire d'alertes avec les chemins configurables"""
         # Obtenir le chemin absolu du projet
         project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,6 +39,7 @@ class GestionnaireAlertes:
         # Charger les seuils depuis le fichier de configuration
         self.seuils, self.intervalle_alertes = self.charger_configuration()
         
+        # Initialisation des timestamps pour les dernières alertes
         self.dernieres_alertes = {
             "cpu": None,
             "ram": None,
@@ -80,6 +81,8 @@ class GestionnaireAlertes:
                 intervalle = config.get("intervalle_alertes", DEFAULT_INTERVALLE_ALERTES)
                 
                 print(f"Configuration chargée depuis {self.config_path}")
+                print(f"Seuils configurés: CPU: {seuils['cpu']}%, RAM: {seuils['ram']}%, Disque: {seuils['disk']}%")
+                print(f"Intervalle entre alertes: {intervalle} minutes")
                 return seuils, intervalle
             else:
                 print(f"Fichier de configuration {self.config_path} non trouvé, utilisation des valeurs par défaut")

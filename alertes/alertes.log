@@ -89,3 +89,21 @@
 [2025-04-04 15:54:50] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
 [2025-04-04 15:54:50] Alerte ram envoyée: 83.9% > 80%
 [2025-04-04 15:54:50] Sonde disk: 20.0% (normal)
+[2025-04-24 10:09:36] Système d'alertes démarré
+[2025-04-24 10:09:36] Sonde cpu: 52.2% (normal, seuil: 80%)
+[2025-04-24 10:09:37] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
+[2025-04-24 10:09:37] Alerte ram envoyée: 83.9% > 80%
+[2025-04-24 10:09:37] Sonde disk: 20.0% (normal, seuil: 85%)
+[2025-04-24 10:10:19] Arrêt du système d'alertes
+[2025-04-24 10:10:21] Système d'alertes démarré
+[2025-04-24 10:10:21] Sonde cpu: 52.2% (normal, seuil: 90%)
+[2025-04-24 10:10:22] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
+[2025-04-24 10:10:22] Alerte ram envoyée: 83.9% > 80%
+[2025-04-24 10:10:22] Sonde disk: 20.0% (normal, seuil: 85%)
+[2025-04-24 10:10:26] Arrêt du système d'alertes
+[2025-04-24 10:13:07] Système d'alertes démarré
+[2025-04-24 10:13:07] Sonde cpu: 52.2% (normal, seuil: 90%)
+[2025-04-24 10:13:08] Envoi d'alerte par email avec objet: ALERTE - Mémoire RAM critique: 83.9%
+[2025-04-24 10:13:08] Alerte ram envoyée: 83.9% > 80%
+[2025-04-24 10:13:08] Sonde disk: 20.0% (normal, seuil: 85%)
+[2025-04-24 10:13:47] Arrêt du système d'alertes

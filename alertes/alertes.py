@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Chemin par défaut pour le fichier de configuration
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "alertes", "seuils.json")
+DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),"seuils.json")
 
 # Valeurs par défaut au cas où le fichier n'existe pas
 DEFAULT_SEUILS = {

@@ -31,6 +31,12 @@ class GenerateurGraphiques:
         try:
             print(f"Opening database: {self.db_path}")
             conn = sqlite3.connect(self.db_path)
+            
+            # Ajouter cette ligne pour voir le contenu brut
+            print("Contenu de la base de données:")
+            test_query = "SELECT timestamp_complet, valeur, nom_sonde FROM sondes LIMIT 5"
+            test_df = pd.read_sql_query(test_query, conn)
+            print(test_df)
 
             # Use correct column names based on the schema
             cpu_query = "SELECT timestamp_complet as timestamp, valeur FROM sondes WHERE nom_sonde='cpu' ORDER BY timestamp_complet"
@@ -41,10 +47,11 @@ class GenerateurGraphiques:
             ram_df = pd.read_sql_query(ram_query, conn)
             disk_df = pd.read_sql_query(disk_query, conn)
 
-            # Simple conversion sans gestion de fuseau horaire
+            # Conversion plus robuste des timestamps
             for df in [cpu_df, ram_df, disk_df]:
                 if not df.empty:
-                    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+                    # Conversion explicite et robuste
+                    df['timestamp'] = pd.to_datetime(df['timestamp'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
                     df['valeur'] = pd.to_numeric(df['valeur'], errors='coerce')
                     print(f"Premier timestamp dans DataFrame: {df['timestamp'].iloc[0] if len(df) > 0 else 'aucun'}")
 
@@ -136,9 +143,20 @@ class GenerateurGraphiques:
             plt.grid(True)
             plt.ylim(0, 100)
 
-            # Format de date sur l'axe X
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
+            # Format de date sur l'axe X - version simplifiée et robuste
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+            # Plus d'options pour l'affichage de l'axe X
             plt.gcf().autofmt_xdate()
+            
+            # Forcer la localisation
+            import locale
+            try:
+                locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
+            except:
+                try:
+                    locale.setlocale(locale.LC_TIME, 'fr_FR')
+                except:
+                    pass
 
             # Enregistrer le graphique
             plt.tight_layout()

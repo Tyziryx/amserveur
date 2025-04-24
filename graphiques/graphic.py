@@ -107,17 +107,37 @@ class GenerateurGraphiques:
                 return
 
             plt.figure(figsize=(12, 6))
-            plt.plot(ram_df['timestamp'], ram_df['valeur'], 'g-', linewidth=2)
+            
+            # Utiliser une approche numérique au lieu des dates (comme pour CPU)
+            x = range(len(ram_df))
+            plt.plot(x, ram_df['valeur'], 'g-', linewidth=2)
+            
+            # Créer des étiquettes manuellement à partir des timestamps
+            n_ticks = min(10, len(ram_df))  # Maximum 10 étiquettes sur l'axe X
+            step = max(1, len(ram_df) // n_ticks)
+            
+            # Créer des positions et des étiquettes pour l'axe X
+            positions = range(0, len(ram_df), step)
+            labels = []
+            
+            for i in positions:
+                if i < len(ram_df) and not pd.isna(ram_df['timestamp'].iloc[i]):
+                    try:
+                        # Extraire juste l'heure et les minutes
+                        labels.append(ram_df['timestamp'].iloc[i].strftime('%H:%M'))
+                    except:
+                        labels.append(str(i))
+                else:
+                    labels.append(str(i))
+            
+            plt.xticks(positions, labels, rotation=45)
+            
             plt.title('Utilisation RAM')
             plt.ylabel('Pourcentage (%)')
             plt.xlabel('Heure')
             plt.grid(True)
             plt.ylim(0, 100)
-
-            # Format de date sur l'axe X
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
-            plt.gcf().autofmt_xdate()
-
+            
             # Enregistrer le graphique
             plt.tight_layout()
             plt.savefig(f'{self.output_dir}/ram_usage.png')
@@ -125,6 +145,8 @@ class GenerateurGraphiques:
             print(f"Graphique RAM enregistré dans {self.output_dir}/ram_usage.png")
         except Exception as e:
             print(f"Erreur lors de la génération du graphique RAM: {str(e)}")
+            import traceback
+            traceback.print_exc()
 
     def generer_graphique_cpu(self):
         """Génère un graphique pour l'utilisation du CPU"""
@@ -187,23 +209,46 @@ class GenerateurGraphiques:
                 return
 
             plt.figure(figsize=(12, 6))
-            plt.plot(disk_df['timestamp'], disk_df['valeur'], 'r-', linewidth=2)
+            
+            # Utiliser une approche numérique au lieu des dates (comme pour CPU)
+            x = range(len(disk_df))
+            plt.plot(x, disk_df['valeur'], 'r-', linewidth=2)
+            
+            # Créer des étiquettes manuellement à partir des timestamps
+            n_ticks = min(10, len(disk_df))  # Maximum 10 étiquettes sur l'axe X
+            step = max(1, len(disk_df) // n_ticks)
+            
+            # Créer des positions et des étiquettes pour l'axe X
+            positions = range(0, len(disk_df), step)
+            labels = []
+            
+            for i in positions:
+                if i < len(disk_df) and not pd.isna(disk_df['timestamp'].iloc[i]):
+                    try:
+                        # Extraire juste l'heure et les minutes
+                        labels.append(disk_df['timestamp'].iloc[i].strftime('%H:%M'))
+                    except:
+                        labels.append(str(i))
+                else:
+                    labels.append(str(i))
+            
+            plt.xticks(positions, labels, rotation=45)
+            
             plt.title('Utilisation Disque')
             plt.ylabel('Pourcentage (%)')
             plt.xlabel('Heure')
             plt.grid(True)
             plt.ylim(0, 100)
-
-            # Format de date sur l'axe X , affiche seulement l'heure et commence a 00H toutes les 15 minutes ap
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
-            plt.gcf().autofmt_xdate()
-
+            
             # Enregistrer le graphique
+            plt.tight_layout()
             plt.savefig(f'{self.output_dir}/disk_usage.png')
             plt.close()
             print(f"Graphique disque enregistré dans {self.output_dir}/disk_usage.png")
         except Exception as e:
             print(f"Erreur lors de la génération du graphique disque: {str(e)}")
+            import traceback
+            traceback.print_exc()
 
     def generer_tous_graphiques(self):
         """Génère tous les graphiques disponibles"""
